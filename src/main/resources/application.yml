@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: mentorcheck
+  mongodb:
+    uri: "mongodb://localhost:27017/mentorcheck"
+server:
+  port: 8080
