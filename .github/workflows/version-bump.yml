@@ -47,6 +47,27 @@ jobs:
           PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number')
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
 
+      - name: Wait until PR is mergeable
+        run: |
+          for i in {1..10}; do
+            PR=$(curl -s \
+              -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+              https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ env.PR_NUMBER }})
+            MERGEABLE=$(echo "$PR" | jq -r '.mergeable')
+            STATE=$(echo "$PR" | jq -r '.mergeable_state')
+
+            echo "mergeable=$MERGEABLE state=$STATE"
+
+            if [ "$MERGEABLE" = "true" ]; then
+              exit 0
+            fi
+
+            sleep 1
+          done
+
+          echo "PR is not mergeable"
+          exit 1
+
       - name: Rebase and merge PR
         run: |
           curl -X PUT \
