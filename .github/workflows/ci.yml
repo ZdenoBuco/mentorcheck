@@ -1,5 +1,5 @@
 name: CI
-# bla bla
+# bla bla bla
 on:
   pull_request:
     branches: [ main ]
