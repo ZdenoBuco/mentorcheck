@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
     branches: [ main ]
-# use secrets ${{ secrets.MY_SECRET }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
