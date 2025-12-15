@@ -1,8 +1,10 @@
 name: Version Bump
 
 on:
-  push:
-    branches: [ main ]
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
 
 jobs:
   bump-version:
@@ -22,11 +24,21 @@ jobs:
           java-version: 21
 
       - name: Bump patch version
-        run: mvn versions:set -DnextSnapshot=true
+        run: mvn versions:set -DnextSnapshot=true -DgenerateBackupPoms=false
 
-      - name: Commit and push version
+      - name: Commit to new branch
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git checkout -b version-bump/${GITHUB_RUN_NUMBER}
           git commit -am "chore: bump version"
-          git push
+          git push origin HEAD
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          branch: version-bump/${GITHUB_RUN_NUMBER}
+          title: "Version bump"
+          body: "Automated version bump"
+          base: main
