@@ -76,6 +76,7 @@ class BookControllerTest {
 
         assertEquals(HttpStatus.OK, exchange.statusCode)
         assertEquals(update.title, exchange.body!!.title)
+        throw RuntimeException("test failed")
     }
 
     fun provideBooks(): Stream<Book> = Stream.of(
