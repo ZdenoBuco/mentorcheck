@@ -33,7 +33,6 @@ jobs:
           git commit -am "chore: bump version"
           git push origin $BRANCH_NAME
 
-      # Create Pull Request
       - name: Create Pull Request
         id: create_pr
         run: |
@@ -48,7 +47,6 @@ jobs:
           PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number')
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
 
-      # Rebase & Merge Pull Request
       - name: Rebase and merge PR
         run: |
           curl -X PUT \
